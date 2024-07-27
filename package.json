@@ -1,7 +1,7 @@
 {
-  "name": "volley-ui",
-  "version": "0.0.1",
-  "private": true,
+  "name": "pvl",
+  "version": "0.1.0",
+  "private": false,
   "scripts": {
     "dev": "vite dev",
     "build": "prisma generate vite build",

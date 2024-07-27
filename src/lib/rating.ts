@@ -23,12 +23,11 @@ interface PlayerResult extends User {
 export function calculateResults(players: User[], matches: Match[]) {
   const playerResults: PlayerResult[] = players.map((p) => ({
     ...p,
-    isActive: p.isActive,
-    rating: p.initialRating,
-    games: p.initialGames,
+    rating: 1500,
+    games: 0,
     wins: 0,
     losses: 0,
-    ratingHistory: [p.initialRating],
+    ratingHistory: [1500],
     placeLowest: 0,
     placeHighest: 100,
     previousPlace: null,
@@ -43,7 +42,7 @@ export function calculateResults(players: User[], matches: Match[]) {
 
   const getPlayerResult = (id: number) => {
     const player = playerResults.find((p) => p.id === id);
-    if (!player) throw new Error("Player not found");
+    if (!player) throw new Error(`Player not found: ${id}`);
     return player;
   };
 

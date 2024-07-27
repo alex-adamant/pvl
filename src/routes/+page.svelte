@@ -6,6 +6,8 @@
   import { getTeamStats } from "$lib/teams";
   import { calculateWinrate } from "$lib";
 
+  const name = "Саша А";
+
   let ctx;
   let chartCanvas: HTMLCanvasElement;
 
@@ -17,7 +19,7 @@
 
   export const teamStats = getTeamStats(data.users, data.matches);
 
-  const playerResult = results.find((r) => r.name === "Саша")!.ratingHistory;
+  const playerResult = results.find((r) => r.name === name)!.ratingHistory;
 
   onMount(async () => {
     ctx = chartCanvas.getContext("2d");
@@ -29,7 +31,7 @@
         labels: playerResult.map((_, i) => i + 1),
         datasets: [
           {
-            label: "Олег",
+            label: name,
             data: playerResult,
             borderWidth: 1,
           },
@@ -62,7 +64,7 @@
         <td>{index + 1}</td>
         <td>{item.name}</td>
         <td>{item.rating}</td>
-        <td>{item.games - item.initialGames}</td>
+        <td>{item.games}</td>
         <!--        <td>{item.ratingChange}</td>-->
         <td>{Math.max(...item.ratingHistory)}</td>
         <td>{Math.min(...item.ratingHistory)}</td>
