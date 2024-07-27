@@ -6,10 +6,10 @@
   import { getTeamStats } from "$lib/teams";
   import { calculateWinrate } from "$lib";
 
-  const name = "Саша А";
-
+  let name = "Саша А";
   let ctx;
   let chartCanvas: HTMLCanvasElement;
+  let chart: Chart;
 
   export let data;
 
@@ -17,15 +17,29 @@
     (p) => !p.isHidden,
   );
 
+  function setName(n: string) {
+    name = n;
+  }
+
   export const teamStats = getTeamStats(data.users, data.matches);
 
-  const playerResult = results.find((r) => r.name === name)!.ratingHistory;
+  $: playerResult = results.find((r) => r.name === name)!.ratingHistory;
+
+  $: if (chart) {
+    chart.data.labels = playerResult.map((_, i) => i + 1);
+    chart.data.datasets[0] = {
+      label: name,
+      data: playerResult,
+      borderWidth: 1,
+    };
+    chart.update();
+  }
 
   onMount(async () => {
     ctx = chartCanvas.getContext("2d");
 
     Chart.register(...registerables);
-    new Chart(ctx!, {
+    chart = new Chart(ctx!, {
       type: "line",
       data: {
         labels: playerResult.map((_, i) => i + 1),
@@ -60,7 +74,7 @@
   </thead>
   <tbody>
     {#each results as item, index}
-      <tr>
+      <tr class="hover:bg-gray-100" on:click={() => setName(item.name)}>
         <td>{index + 1}</td>
         <td>{item.name}</td>
         <td>{item.rating}</td>
