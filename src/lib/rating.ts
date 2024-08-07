@@ -1,8 +1,10 @@
-import type { Match, User } from "@prisma/client";
+import type { ChatUser, Match, User } from "@prisma/client";
 
 const GAMES_CUTOFF = 30;
 
-interface PlayerResult extends User {
+const firstChatId = "-1001849842756";
+
+export interface PlayerResult extends ChatUser, User {
   rating: number;
   ratingHistory: number[];
   games: number;
@@ -20,14 +22,19 @@ interface PlayerResult extends User {
   longestLossStreak: number;
 }
 
-export function calculateResults(players: User[], matches: Match[]) {
+export function calculateResults(
+  players: (ChatUser & { user: User })[],
+  matches: Match[],
+) {
+  const chatId = matches[0].chatId.toString();
   const playerResults: PlayerResult[] = players.map((p) => ({
     ...p,
-    rating: 1500,
-    games: 0,
+    ...p.user,
+    rating: firstChatId === chatId ? p.initialRating : 1500,
+    games: firstChatId === chatId ? p.initialGames : 0,
     wins: 0,
     losses: 0,
-    ratingHistory: [1500],
+    ratingHistory: [firstChatId === chatId ? p.initialRating : 1500],
     placeLowest: 0,
     placeHighest: 100,
     previousPlace: null,
@@ -39,6 +46,8 @@ export function calculateResults(players: User[], matches: Match[]) {
     longestWinStreak: 0,
     longestLossStreak: 0,
   }));
+
+  // console.log(playerResults);
 
   const getPlayerResult = (id: number) => {
     const player = playerResults.find((p) => p.id === id);
@@ -75,7 +84,7 @@ export function calculateResults(players: User[], matches: Match[]) {
 
     const isLastDay = Number(index) === matches.length - 1;
     const hasDayChanged =
-      match.day.getDate() !== matches[Number(index) + 1]?.day.getDate();
+      match.day.getUTCDate() !== matches[Number(index) + 1]?.day.getUTCDate();
 
     const sortedPlayers = playerResults
       .filter((p) => p.isActive && !p.isHidden)
