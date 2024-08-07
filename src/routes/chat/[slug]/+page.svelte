@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
+  import { twMerge } from "tailwind-merge";
 
   export let data;
 
@@ -31,7 +32,16 @@
           <td>{item.name}</td>
           <td>{item.games}</td>
           <td>{item.rating}</td>
-          <td>{item.ratingChange}</td>
+          <td
+            class={twMerge(
+              "pr-7 text-right",
+              item.ratingChange > 0 && "text-green-500",
+              item.ratingChange < 0 && "text-red-500",
+            )}
+            >{item.ratingChange > 0
+              ? `+${item.ratingChange}`
+              : item.ratingChange}</td
+          >
         </tr>
       {/each}
     </tbody>
