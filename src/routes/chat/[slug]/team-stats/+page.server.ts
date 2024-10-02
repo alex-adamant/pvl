@@ -7,7 +7,7 @@ export async function load({ params }) {
   const slug = params.slug;
 
   const users = await prisma.user.findMany({
-    where: { chats: { some: { slug } } },
+    where: { chatUser: { some: { chat: { slug } } } },
     orderBy: { id: "asc" },
   });
 

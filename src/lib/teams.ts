@@ -48,7 +48,7 @@ export function getTeamStats(players: User[], matches: Match[]) {
 
   return [...teamStats.values()]
     .sort(
-      (a, b) => calculateWinrate(b) - calculateWinrate(a) || b.games - a.games,
+      (a, b) => b.wins - b.losses - (a.wins - a.losses) || b.games - a.games,
     )
     .filter((t) => t.games > 0);
 }
